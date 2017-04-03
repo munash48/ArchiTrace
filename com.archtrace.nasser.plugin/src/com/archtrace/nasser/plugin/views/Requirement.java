@@ -55,7 +55,7 @@ final StringBuilder formatted = new StringBuilder();
 		if (Feature==null){
 			formatted.append(" [No Feature] ");
 		} else {
-			formatted.append(Feature+ " ");
+			formatted.append(" ("+Feature+ ")  ");
 		}
 		if (Description==null){
 			formatted.append(" [NO Description] ");
