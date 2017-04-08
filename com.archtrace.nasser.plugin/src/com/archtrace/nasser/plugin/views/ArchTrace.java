@@ -643,6 +643,7 @@ public class ArchTrace extends ViewPart {
 		button1tab4.addSelectionListener(new SelectionListener() {
 
 			String[][] ComponentMatrix;
+			int maxcomp = 0;
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -683,7 +684,7 @@ public class ArchTrace extends ViewPart {
 
 						if (tline.charAt(0) == 's' & tline.charAt(14) == 'n') {
 							for (int j = 0; j < tline.length(); j++)
-								if (tline.charAt(j) == ',') {
+								if (tline.charAt(j) == ','& j==tline.lastIndexOf(',')) {
 									selection1[i] = tline;
 									i++;
 								}
@@ -696,7 +697,8 @@ public class ArchTrace extends ViewPart {
 							.println(" \n\nSELECTED LINES ARE\n .................................... ");
 
 					String[] csvline = new String[i];
-					ComponentMatrix = new String[i][2];
+					
+					
 
 					for (int j = 0; j < i; j++) {
 						System.out.println(selection1[j]);
@@ -708,20 +710,26 @@ public class ArchTrace extends ViewPart {
 						System.out.println(csvline[j]);
 
 					}
+					for (int j = 0; j < i; j++) {
+						String[] Component1 = csvline[j].split(cvsSplitBy);
+						if(maxcomp<Component1.length)
+							maxcomp=Component1.length;
+					}
+					ComponentMatrix = new String[i][maxcomp];
 
 					for (int j = 0; j < i; j++) {
 						String[] Component = csvline[j].split(cvsSplitBy);
 
-						for (int k = 0; k < 2; k++) {
+						for (int k = 0; k < Component.length; k++) {
 
 							ComponentMatrix[j][k] = Component[k];
 
 						}
 					}
 					System.out
-							.println(" \n\nmatrix formart\n.................................... ");
+							.println(" \n\n component matrix formart\n.................................... ");
 					for (int i2 = 0; i2 < i; i2++) {
-						for (int j = 0; j < 2; j++) {
+						for (int j = 0; j < maxcomp; j++) {
 							System.out.print(ComponentMatrix[i2][j] + "   ");
 
 						}
@@ -733,8 +741,15 @@ public class ArchTrace extends ViewPart {
 							| SWT.FULL_SELECTION);
 					table.setLinesVisible(true);
 					table.setHeaderVisible(true);
-
-					String[] titles = { "   UR_ID   ", "  Componet name ", };
+					String[] titles= new String[maxcomp];
+					titles[0]="  COMPONENT NAME";
+					titles[1]="  REQUIMENT1 ";
+					if(maxcomp>1)
+					for(int t=2;t<maxcomp;t++)
+						titles[t]="REUIREMENT "+t;
+					
+					
+					
 					for (int i1 = 0; i1 < titles.length; i1++) {
 						TableColumn column = new TableColumn(table, SWT.NONE);
 						column.setText(titles[i1]);
@@ -742,7 +757,7 @@ public class ArchTrace extends ViewPart {
 
 					for (int i2 = 0; i2 < i; i2++) {
 						TableItem item1 = new TableItem(table, SWT.NONE);
-						for (int j = 0; j < 2; j++) {
+						for (int j = 0; j < maxcomp; j++) {
 
 							item1.setText(j, ComponentMatrix[i2][j] + " ");
 						}
@@ -790,6 +805,7 @@ public class ArchTrace extends ViewPart {
 		button1tab5.addSelectionListener(new SelectionListener() {
 			String[][] ComponentMatrix;
 			String[][] RequirMatrix;
+			int maxcomp=0;
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -833,7 +849,7 @@ public class ArchTrace extends ViewPart {
 
 						if (tline.charAt(0) == 's' & tline.charAt(14) == 'n') {
 							for (int j = 0; j < tline.length(); j++)
-								if (tline.charAt(j) == ',') {
+								if (tline.charAt(j) == ','& j==tline.lastIndexOf(',')) {
 									selection1[i] = tline;
 									i++;
 									rowCount3++;
@@ -846,7 +862,7 @@ public class ArchTrace extends ViewPart {
 							.println(" \n\nSELECTED LINES ARE\n .................................... ");
 
 					String[] csvline = new String[i];
-					ComponentMatrix = new String[i][2];
+					ComponentMatrix = new String[i][10];
 
 					for (int j = 0; j < i; j++) {
 						System.out.println(selection1[j]);
@@ -861,17 +877,26 @@ public class ArchTrace extends ViewPart {
 
 					for (int j = 0; j < i; j++) {
 						String[] Component = csvline[j].split(cvsSplitBy);
+						if(maxcomp<Component.length)
+							maxcomp=Component.length;
+						
 
-						for (int k = 0; k < 2; k++) {
+						for (int k = 0; k < maxcomp; k++) {
+							
+							if (k>=Component.length)
 
-							ComponentMatrix[j][k] = Component[k];
+							ComponentMatrix[j][k] = "     ";
+							else
+								ComponentMatrix[j][k] = Component[k];
 
 						}
 					}
+					
+					System.out.println(" Maxcomp is "+ maxcomp);
 					System.out
-							.println(" \n\nmatrix formart\n.................................... ");
+							.println(" \n\nCOMPONENTS \n matrix formart\n.................................... ");
 					for (int i2 = 0; i2 < i; i2++) {
-						for (int j = 0; j < 2; j++) {
+						for (int j = 0; j < maxcomp; j++) {
 							System.out.print(ComponentMatrix[i2][j] + "   ");
 
 						}
@@ -921,7 +946,7 @@ public class ArchTrace extends ViewPart {
 						// use comma as separator
 						String[] requirement = line.split(cvsSplitBy);
 
-						for (int j = 0; j < 3; j++) {
+						for (int j = 0; j < requirement.length; j++) {
 							RequirMatrix[i][j] = requirement[j];
 
 						}
@@ -945,7 +970,7 @@ public class ArchTrace extends ViewPart {
 					System.out.println(rowCount4);
 					titles[0] = "   ";
 					for (int i3 = 1; i3 < rowCount3 + 1; i3++)
-						titles[i3] = ComponentMatrix[i3 - 1][1];
+						titles[i3] = ComponentMatrix[i3 - 1][0];
 
 					for (int i1 = 0; i1 < titles.length; i1++) {
 						TableColumn column = new TableColumn(table, SWT.NONE);
@@ -958,40 +983,41 @@ public class ArchTrace extends ViewPart {
 					for (int i2 = 0; i2 < i; i2++) {
 						TableItem item1 = new TableItem(table, SWT.NONE);
 						int k=0;
-						for (int j = 0; j < rowCount4; j++) {
-							
+						
+							int j=0;
 							if (j == 0) {
 								holder = RequirMatrix[i2][j];
 								item1.setText(k, holder + " ");
 								System.out.println(item1+ " inside if(j=0) of i2 & j " + i2 +" & "+ j);
 								k++;
-								continue;
+								
 							
 							}
 							
-								for (int y = 0; y < rowCount3; y++) {
-									if ((ComponentMatrix[y][0]).equalsIgnoreCase(RequirMatrix[i2][0])){
-										
-										holder = marcher;
-										item1.setText(k, holder + " ");
-										System.out.println(item1 +" inside if 2 of y & j "+ y +" & "+ j);
-										k++;
-										continue;
+							for(int y=0;y<rowCount3;y++){
+								for (int x=1;x<maxcomp;x++){
+									if (((ComponentMatrix[y][x]).trim()).equalsIgnoreCase((RequirMatrix[i2][0]).trim())){
+										holder=marcher;
 									}
-										
-									else {
-										
-										holder = "  ";
-										item1.setText(k, holder + " ");
-										System.out.println(item1+ " inside elseof y & j "+ y +" & "+ j);
-										k++;
-									}
-
+									
 								}
-
+								if (holder.equals(marcher)){
+									item1.setText(k, holder );
+									holder="        ";
+								}
+									
+								
+								else{
+									holder="      ";
+									item1.setText(k, holder );
+								}
+								k++;
+							}
 							
-						}
+							
 					}
+					
+					
 					for (int i1 = 0; i1 < titles.length; i1++) {
 						table.getColumn(i1).pack();
 					}
