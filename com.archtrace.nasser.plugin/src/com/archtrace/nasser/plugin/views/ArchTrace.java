@@ -18,8 +18,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
@@ -1022,6 +1024,19 @@ public class ArchTrace extends ViewPart {
 						table.getColumn(i1).pack();
 					}
 					table.setSize(table.computeSize(SWT.DEFAULT, 200));
+					table.addListener(SWT.MouseHover, new Listener() {
+					   
+
+						@Override
+						public void handleEvent(Event event) {
+							// TODO Auto-generated method stub
+							String string = "";
+					        TableItem[] selection = table.getSelection();
+					        for (int i = 0; i < selection.length; i++)
+					          string += selection[i] + " ";
+					        System.out.println("Selection={" + string + "}");
+						}
+					    });
 
 					br.close();
 
