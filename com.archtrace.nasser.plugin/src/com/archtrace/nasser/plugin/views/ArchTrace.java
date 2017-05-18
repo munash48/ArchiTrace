@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import javax.swing.JFileChooser;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -46,6 +47,11 @@ import org.eclipse.ui.part.ViewPart;
  */
 
 public class ArchTrace extends ViewPart {
+	String[][] ComponentMatrix;
+	String[][] RequirMatrix;
+	int maxcomp = 0;
+	int rowCount3 = 0;
+	int RQrowCount3 = 0;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -534,7 +540,7 @@ public class ArchTrace extends ViewPart {
 				String csvFile1 = Text1Tab2.getText();
 				String line = "";
 				String cvsSplitBy = ",";
-				int rowCount3 = 0;
+
 				int i = 0;
 
 				try (BufferedReader br = new BufferedReader(new FileReader(
@@ -544,11 +550,11 @@ public class ArchTrace extends ViewPart {
 
 						// use comma as separator
 						String[] requirement = line.split(cvsSplitBy);
-						rowCount3++;
+						RQrowCount3++;
 
 						System.out.println(requirement[0] + "   "
-								+ requirement[1] + "   " + requirement[2] + " "
-								+ rowCount3);
+								+ requirement[1] + "   " + requirement[2]
+								+ "  " + requirement[3] + RQrowCount3);
 
 					}
 				} catch (FileNotFoundException e1) {
@@ -558,7 +564,7 @@ public class ArchTrace extends ViewPart {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				RequirMatrix = new String[rowCount3][3];
+				RequirMatrix = new String[RQrowCount3][4];
 				try (BufferedReader br = new BufferedReader(new FileReader(
 						csvFile1))) {
 
@@ -567,7 +573,7 @@ public class ArchTrace extends ViewPart {
 						// use comma as separator
 						String[] requirement = line.split(cvsSplitBy);
 
-						for (int j = 0; j < 3; j++) {
+						for (int j = 0; j < 4; j++) {
 							RequirMatrix[i][j] = requirement[j];
 
 						}
@@ -581,7 +587,7 @@ public class ArchTrace extends ViewPart {
 					table.setLinesVisible(true);
 					table.setHeaderVisible(true);
 
-					String[] titles = { "   UR_ID   ", "  Feature  ",
+					String[] titles = { "   UR_ID   ", " USER ", "  Feature  ",
 							"    Description   " };
 					for (int i1 = 0; i1 < titles.length; i1++) {
 						TableColumn column = new TableColumn(table, SWT.NONE);
@@ -589,7 +595,7 @@ public class ArchTrace extends ViewPart {
 					}
 
 					for (int i2 = 0; i2 < i; i2++) {
-						for (int j = 0; j < 3; j++) {
+						for (int j = 0; j < titles.length; j++) {
 							System.out.print(RequirMatrix[i2][j] + "   ");
 
 						}
@@ -599,7 +605,7 @@ public class ArchTrace extends ViewPart {
 
 					for (int i2 = 0; i2 < i; i2++) {
 						TableItem item1 = new TableItem(table, SWT.NONE);
-						for (int j = 0; j < 3; j++) {
+						for (int j = 0; j < titles.length; j++) {
 
 							item1.setText(j, RequirMatrix[i2][j] + " ");
 						}
@@ -686,7 +692,8 @@ public class ArchTrace extends ViewPart {
 
 						if (tline.charAt(0) == 's' & tline.charAt(14) == 'n') {
 							for (int j = 0; j < tline.length(); j++)
-								if (tline.charAt(j) == ','& j==tline.lastIndexOf(',')) {
+								if (tline.charAt(j) == ','
+										& j == tline.lastIndexOf(',')) {
 									selection1[i] = tline;
 									i++;
 								}
@@ -699,8 +706,6 @@ public class ArchTrace extends ViewPart {
 							.println(" \n\nSELECTED LINES ARE\n .................................... ");
 
 					String[] csvline = new String[i];
-					
-					
 
 					for (int j = 0; j < i; j++) {
 						System.out.println(selection1[j]);
@@ -714,8 +719,8 @@ public class ArchTrace extends ViewPart {
 					}
 					for (int j = 0; j < i; j++) {
 						String[] Component1 = csvline[j].split(cvsSplitBy);
-						if(maxcomp<Component1.length)
-							maxcomp=Component1.length;
+						if (maxcomp < Component1.length)
+							maxcomp = Component1.length;
 					}
 					ComponentMatrix = new String[i][maxcomp];
 
@@ -743,15 +748,13 @@ public class ArchTrace extends ViewPart {
 							| SWT.FULL_SELECTION);
 					table.setLinesVisible(true);
 					table.setHeaderVisible(true);
-					String[] titles= new String[maxcomp];
-					titles[0]="  COMPONENT NAME";
-					titles[1]="  REQUIMENT1 ";
-					if(maxcomp>1)
-					for(int t=2;t<maxcomp;t++)
-						titles[t]="REUIREMENT "+t;
-					
-					
-					
+					String[] titles = new String[maxcomp];
+					titles[0] = "  COMPONENT NAME";
+					titles[1] = "  REQUIMENT1 ";
+					if (maxcomp > 1)
+						for (int t = 2; t < maxcomp; t++)
+							titles[t] = "REUIREMENT " + t;
+
 					for (int i1 = 0; i1 < titles.length; i1++) {
 						TableColumn column = new TableColumn(table, SWT.NONE);
 						column.setText(titles[i1]);
@@ -805,14 +808,11 @@ public class ArchTrace extends ViewPart {
 		button1tab5.setBounds(clientArea.x + 10, clientArea.y + 10, 100, 32);
 		button1tab5.setText("Genrate RTM");
 		button1tab5.addSelectionListener(new SelectionListener() {
-			String[][] ComponentMatrix;
-			String[][] RequirMatrix;
-			int maxcomp=0;
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				int rowCount3 = 0;
+
 				int rowCount4 = 0;
 				String componetf = Text2Tab2.getText();
 				String line = "";
@@ -851,7 +851,8 @@ public class ArchTrace extends ViewPart {
 
 						if (tline.charAt(0) == 's' & tline.charAt(14) == 'n') {
 							for (int j = 0; j < tline.length(); j++)
-								if (tline.charAt(j) == ','& j==tline.lastIndexOf(',')) {
+								if (tline.charAt(j) == ','
+										& j == tline.lastIndexOf(',')) {
 									selection1[i] = tline;
 									i++;
 									rowCount3++;
@@ -879,22 +880,21 @@ public class ArchTrace extends ViewPart {
 
 					for (int j = 0; j < i; j++) {
 						String[] Component = csvline[j].split(cvsSplitBy);
-						if(maxcomp<Component.length)
-							maxcomp=Component.length;
-						
+						if (maxcomp < Component.length)
+							maxcomp = Component.length;
 
 						for (int k = 0; k < maxcomp; k++) {
-							
-							if (k>=Component.length)
 
-							ComponentMatrix[j][k] = "     ";
+							if (k >= Component.length)
+
+								ComponentMatrix[j][k] = "     ";
 							else
 								ComponentMatrix[j][k] = Component[k];
 
 						}
 					}
-					
-					System.out.println(" Maxcomp is "+ maxcomp);
+
+					System.out.println(" Maxcomp is " + maxcomp);
 					System.out
 							.println(" \n\nCOMPONENTS \n matrix formart\n.................................... ");
 					for (int i2 = 0; i2 < i; i2++) {
@@ -937,7 +937,7 @@ public class ArchTrace extends ViewPart {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				RequirMatrix = new String[rowCount4][3];
+				RequirMatrix = new String[rowCount4][4];
 				try (BufferedReader br = new BufferedReader(new FileReader(
 						csvFile1))) {
 
@@ -954,6 +954,7 @@ public class ArchTrace extends ViewPart {
 						}
 
 						i++;
+						
 
 					}
 
@@ -984,59 +985,116 @@ public class ArchTrace extends ViewPart {
 
 					for (int i2 = 0; i2 < i; i2++) {
 						TableItem item1 = new TableItem(table, SWT.NONE);
-						int k=0;
-						
-							int j=0;
-							if (j == 0) {
-								holder = RequirMatrix[i2][j];
-								item1.setText(k, holder + " ");
-								System.out.println(item1+ " inside if(j=0) of i2 & j " + i2 +" & "+ j);
-								k++;
-								
-							
+						int k = 0;
+
+						int j = 0;
+						if (j == 0) {
+							holder = RequirMatrix[i2][j];
+							item1.setText(k, holder + " ");
+							System.out.println(item1
+									+ " inside if(j=0) of i2 & j " + i2 + " & "
+									+ j);
+							k++;
+
+						}
+
+						for (int y = 0; y < rowCount3; y++) {
+							for (int x = 1; x < maxcomp; x++) {
+								if (((ComponentMatrix[y][x]).trim())
+										.equalsIgnoreCase((RequirMatrix[i2][0])
+												.trim())) {
+									holder = marcher;
+								}
+
 							}
-							
-							for(int y=0;y<rowCount3;y++){
-								for (int x=1;x<maxcomp;x++){
-									if (((ComponentMatrix[y][x]).trim()).equalsIgnoreCase((RequirMatrix[i2][0]).trim())){
-										holder=marcher;
-									}
-									
-								}
-								if (holder.equals(marcher)){
-									item1.setText(k, holder );
-									holder="        ";
-								}
-									
-								
-								else{
-									holder="      ";
-									item1.setText(k, holder );
-								}
-								k++;
+							if (holder.equals(marcher)) {
+								item1.setText(k, holder);
+								holder = "        ";
 							}
-							
-							
+
+							else {
+								holder = "      ";
+								item1.setText(k, holder);
+							}
+							k++;
+						}
+
 					}
-					
-					
+
 					for (int i1 = 0; i1 < titles.length; i1++) {
 						table.getColumn(i1).pack();
 					}
 					table.setSize(table.computeSize(SWT.DEFAULT, 200));
-					table.addListener(SWT.MouseHover, new Listener() {
-					   
+					table.addListener(SWT.MouseDown, new Listener() {
 
 						@Override
 						public void handleEvent(Event event) {
 							// TODO Auto-generated method stub
 							String string = "";
-					        TableItem[] selection = table.getSelection();
-					        for (int i = 0; i < selection.length; i++)
-					          string += selection[i] + " ";
-					        System.out.println("Selection={" + string + "}");
+
+							TableItem[] selection = table.getSelection();
+							for (int i = 0; i < selection.length; i++)
+								string += selection[i] + ",";
+							string = string.replace('{', ',');
+							string = string.replaceAll(" ", ",Tulumbe");
+							string = string.replace('}', ' ');
+							String[] splitstring = string.split(cvsSplitBy);
+							for (int i = 0; i < splitstring.length; i++)
+								if (splitstring[i].charAt(0) == 'U') {
+									string = splitstring[i];
+								}
+							String UID = string;
+							String userr = "";
+							String ftr = "";
+							String desc = "";
+							String comps = "";
+
+						System.out.println("RQrowCount3......   " +RQrowCount3 );
+							
+							for (int i2 = 0; i2 < RQrowCount3; i2++) {
+								if (RequirMatrix[i2][0].equals(UID)){
+									userr = RequirMatrix[i2][1];
+									ftr=RequirMatrix[i2][2];
+									desc=RequirMatrix[i2][3];
+									
+								}
+								for (int j = 0; j < 4; j++) {
+									
+									System.out.print(RequirMatrix[i2][j]+ "   ");
+
+									
+											
+
+								}
+								System.out.println();
+
+							}
+
+						
+							for (int i2 = 0; i2 < rowCount3; i2++) {
+								for (int j = 0; j < maxcomp; j++) {
+									
+									if ((UID.trim()).equalsIgnoreCase(ComponentMatrix[i2][j].trim())){
+										comps+= "> "+ComponentMatrix[i2][0] + "\n";
+										System.out.println("comps contains>>>>"+ comps);
+									}
+									
+									System.out.print(ComponentMatrix[i2][j]
+											+ "   ");
+
+								}
+								System.out.println();
+
+							}
+
+							string = "REQUIREMENT DETAILS \n\n"+ "URID                 : " + UID  + "\nUSER                : " + userr +
+									"\nFeature            : " + ftr + "\nDescription     : "+ desc+"\n\nCOMPONENTS WHICH FULL FILL IT \n\n" + comps;
+
+							MessageDialog.openInformation(item5.getControl()
+									.getShell(), "Arch Trace", string);
+
 						}
-					    });
+					});
 
 					br.close();
 
