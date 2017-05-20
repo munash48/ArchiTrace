@@ -55,6 +55,7 @@ public class ArchTrace extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		
 		parent.setSize(700, 400);
 
 		GridLayout grid2layout = new GridLayout();
