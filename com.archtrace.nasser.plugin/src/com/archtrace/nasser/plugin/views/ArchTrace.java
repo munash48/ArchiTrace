@@ -73,6 +73,8 @@ public class ArchTrace extends ViewPart {
 		group2.setLayout(grid2layout);
 
 		grid2layoutdata.horizontalAlignment = GridData.FILL;
+		
+		
 		Label space0tab2 = new Label(group2, SWT.NONE);
 		space0tab2.setText("                                              ");
 		space0tab2.setLayoutData(grid2layoutdata);
