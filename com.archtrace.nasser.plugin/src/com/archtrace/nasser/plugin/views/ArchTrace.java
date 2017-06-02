@@ -915,7 +915,7 @@ public class ArchTrace extends ViewPart {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+		 		}
 
 				String csvFile1 = Text1Tab2.getText();
 
